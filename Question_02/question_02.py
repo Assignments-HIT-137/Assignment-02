@@ -53,3 +53,43 @@ def get_season(month):
         return "Spring"
 
 data['season'] = data['month_num'].apply(get_season)
+
+# Step 4: Seasonal Average across ALL stations & years
+
+season_avg = data.groupby('season')['temperature'].mean().round(1)
+
+with open("average_temp.txt", "w") as f:
+    for season, avg in season_avg.items():
+        f.write(f"{season}: {avg}°C\n")
+
+
+# Step 5: Temperature Range per Station
+
+station_range = data.groupby('STATION_NAME')['temperature'].agg(['min','max'])
+station_range['range'] = station_range['max'] - station_range['min']
+
+max_range = station_range['range'].max()
+largest_range_stations = station_range[station_range['range'] == max_range]
+
+with open("largest_temp_range_station.txt", "w") as f:
+    for station, row in largest_range_stations.iterrows():
+        f.write(f"{station}: Range {row['range']:.1f}°C (Max: {row['max']:.1f}°C, Min: {row['min']:.1f}°C)\n")
+
+# Step 6: Temperature Stability (StdDev)
+
+station_std = data.groupby('STATION_NAME')['temperature'].std()
+
+min_std = station_std.min()
+max_std = station_std.max()
+
+most_stable = station_std[station_std == min_std]
+most_variable = station_std[station_std == max_std]
+
+with open("temperature_stability_stations.txt", "w") as f:
+    for station, std in most_stable.items():
+        f.write(f"Most Stable: {station}: StdDev {std:.1f}°C\n")
+    for station, std in most_variable.items():
+        f.write(f"Most Variable: {station}: StdDev {std:.1f}°C\n")
+
+print("Analysis complete. Results saved to respective text files.")
+
