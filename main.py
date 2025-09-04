@@ -109,6 +109,7 @@ def encrypt_file(shift1, shift2, input_filename="raw_text.txt", output_filename=
         print(f"Error: The file '{input_filename}' was not found.")
         return False
 
+
 def main():
     """
     Main function to run the entire encryption, decryption, and verification process.
