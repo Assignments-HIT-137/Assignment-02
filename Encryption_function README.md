@@ -1,0 +1,1 @@
+Encryption Function Created. It requires the text file (plain text) to encrypt named as "raw_text.txt" in the directory to run correctly. The output of this function will be a text file named "encrypted_text.txt" that will contain the encrypted(cipher text).
