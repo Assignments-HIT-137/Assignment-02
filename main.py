@@ -9,100 +9,52 @@ def create_raw_text_file(filename="raw_text.txt"):
             f.write("12345 Hello World! ABCDEFGHIJKLMNOPQRSTUVWXYZ\n")
             f.write("This is a simple message for testing.")
         print(f"Created sample file: {filename}")
-def encrypt_file(shift1, shift2, input_filename="raw_text.txt", output_filename="encrypted_text.txt"):
+def decrypt_file(shift1, shift2, input_filename="encrypted_text.txt", output_filename="decrypted_text.txt"):
     """
-    Encrypts the content of a file based on the given shift values and rules.
+    Decrypts the content of a file based on the original encryption rules.
     Reads from input_filename and writes to output_filename.
     """
     try:
         with open(input_filename, "r") as infile, open(output_filename, "w") as outfile:
             content = infile.read()
-            encrypted_content = ""
+            decrypted_content = ""
             for char in content:
                 # Handle lowercase letters
                 if 'a' <= char <= 'z':
-                    # Handle a-m letters
+                    # Decryption is the reverse of encryption
+                    # First half (a-m) encryption was forward shift1*shift2, so decryption is backward
+                    # Second half (n-z) encryption was backward shift1+shift2, so decryption is forward
                     if 'a' <= char <= 'm':
-                        # First half: shift forward by shift1 * shift2
                         base = ord('a')
                         offset = ord(char) - base  
-                        shift = (shift1 * shift2) % 13 # using modulus 13 to ensure that the shift stays within the 13 letters
-                        encrypted_content += chr(base + (offset + shift) % 13) # %13 to wrap around oif it goes past 'm'
+                        shift = (shift1 * shift2) % 13
+                        decrypted_content += chr(base + (offset - shift) % 13)
                     else: # n-z
-                        # Second half: shift backward by shift1 + shift2
                         base = ord('n')
                         offset = ord(char) - base  
                         shift = (shift1 + shift2) % 13
-                        encrypted_content += chr(base + (offset - shift) % 13)
+                        decrypted_content += chr(base + (offset + shift) % 13)
 
                 # Handle uppercase letters
                 elif 'A' <= char <= 'Z':
+                    # Decryption is the reverse of encryption
                     if 'A' <= char <= 'M':
                         base = ord('A')
                         offset = ord(char) - base  
                         shift = shift1 % 13
-                        encrypted_content += chr(base + (offset - shift) % 13)
+                        decrypted_content += chr(base + (offset + shift) % 13)
                     else: # N-Z
-                        # Second half: shift forward by shift2 squared
+                        # Encryption was forward shift2**2, so decryption is backward
                         base = ord('N')
                         offset = ord(char) - base  
                         shift = (shift2 ** 2) % 13
-                        encrypted_content += chr(base + (offset + shift) % 13)
-
+                        decrypted_content += chr(base + (offset - shift) % 13)
+                
                 # Handle all other characters
                 else:
-                    encrypted_content += char
-            outfile.write(encrypted_content)
-        print(f"File '{input_filename}' encrypted successfully to '{output_filename}'.")
-        return True
-    except FileNotFoundError:
-        print(f"Error: The file '{input_filename}' was not found.")
-        return False
-def encrypt_file(shift1, shift2, input_filename="raw_text.txt", output_filename="encrypted_text.txt"):
-    """
-    Encrypts the content of a file based on the given shift values and rules.
-    Reads from input_filename and writes to output_filename.
-    """
-    try:
-        with open(input_filename, "r") as infile, open(output_filename, "w") as outfile:
-            content = infile.read()
-            encrypted_content = ""
-            for char in content:
-                # Handle lowercase letters
-                if 'a' <= char <= 'z':
-                    # Handle a-m letters
-                    if 'a' <= char <= 'm':
-                        # First half: shift forward by shift1 * shift2
-                        base = ord('a')
-                        offset = ord(char) - base  
-                        shift = (shift1 * shift2) % 13 # using modulus 13 to ensure that the shift stays within the 13 letters
-                        encrypted_content += chr(base + (offset + shift) % 13) # %13 to wrap around oif it goes past 'm'
-                    else: # n-z
-                        # Second half: shift backward by shift1 + shift2
-                        base = ord('n')
-                        offset = ord(char) - base  
-                        shift = (shift1 + shift2) % 13
-                        encrypted_content += chr(base + (offset - shift) % 13)
-
-                # Handle uppercase letters
-                elif 'A' <= char <= 'Z':
-                    if 'A' <= char <= 'M':
-                        base = ord('A')
-                        offset = ord(char) - base  
-                        shift = shift1 % 13
-                        encrypted_content += chr(base + (offset - shift) % 13)
-                    else: # N-Z
-                        # Second half: shift forward by shift2 squared
-                        base = ord('N')
-                        offset = ord(char) - base  
-                        shift = (shift2 ** 2) % 13
-                        encrypted_content += chr(base + (offset + shift) % 13)
-
-                # Handle all other characters
-                else:
-                    encrypted_content += char
-            outfile.write(encrypted_content)
-        print(f"File '{input_filename}' encrypted successfully to '{output_filename}'.")
+                    decrypted_content += char
+            outfile.write(decrypted_content)
+        print(f"File '{input_filename}' decrypted successfully to '{output_filename}'.")
         return True
     except FileNotFoundError:
         print(f"Error: The file '{input_filename}' was not found.")
