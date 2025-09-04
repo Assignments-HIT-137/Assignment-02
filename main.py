@@ -107,6 +107,25 @@ def encrypt_file(shift1, shift2, input_filename="raw_text.txt", output_filename=
     except FileNotFoundError:
         print(f"Error: The file '{input_filename}' was not found.")
         return False
+
+def verify_decryption(original_filename="raw_text.txt", decrypted_filename="decrypted_text.txt"):
+    """
+    Compares the original and decrypted files to verify a successful decryption.
+    """
+    try:
+        with open(original_filename, "r") as original_file, open(decrypted_filename, "r") as decrypted_file:
+            original_content = original_file.read()
+            decrypted_content = decrypted_file.read()
+
+        if original_content == decrypted_content:
+            print("\nVerification successful: The decrypted content matches the original content.")
+            return True
+        else:
+            print("\nVerification failed: The decrypted content does not match the original content.")
+            return False
+    except FileNotFoundError:
+        print("Error: One of the files for verification was not found.")
+        return False
 def main():
     """
     Main function to run the entire encryption, decryption, and verification process.
