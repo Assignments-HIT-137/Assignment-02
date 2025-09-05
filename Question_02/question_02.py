@@ -91,7 +91,7 @@ def main():
     calculate_temperatureRange(data)
     # Step 6: Temperature Stability (StdDev)    
     calculate_temperatureStability(data)
-    print("Analysis complete. Results saved to text files.")
+    print("Analysis completed. Results saved to text files.")
 
 if __name__=="__main__":
     main()
